@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -26,6 +27,31 @@ namespace fistTask.Controllers
 
         }
         [HttpPost]
+        public void deleteData(int id)
+        {
+            var d = db.data.Find(id);
+            db.data.Remove(d);
+            db.SaveChanges();
+
+        }
+        [HttpPost]
+        public void UpdateData(string namen, string lname, string email, string phoneno,int ID)
+        {
+
+            datum d
+                = db.data.Find(ID);
+            d.email = email;
+            d.name = namen;
+            d.lastname = lname;
+            d.phone = phoneno;
+            db.Entry(d).State = EntityState.Modified;
+            db.SaveChanges();
+
+
+
+        }
+    
+    [HttpPost]
         public void SaveData(string namen,string lname,string email,string phoneno)
         {
             
@@ -37,7 +63,7 @@ namespace fistTask.Controllers
             d.phone = phoneno;
             db.data.Add(d);
             db.SaveChanges();
-            Response.Redirect("/Registration/AllData");
+          
 
 
         }

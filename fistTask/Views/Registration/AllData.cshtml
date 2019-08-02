@@ -39,7 +39,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="card-header">
-                                    <h5 class="" style="font-family:Arial">Registration form</h5>
+                                    <h5 class="hadding"  style="font-family:Arial">Registration form</h5>
                                 </div>
                                 <div style="width:90%;margin:auto;height:90%">
 
@@ -84,7 +84,7 @@
                         </tr>
 
                     </thead>
-                    <tbody></tbody>
+                    <tbody ></tbody>
                 </table>
             </div>
 
@@ -94,22 +94,90 @@
     <script src="~/Scripts/jquery-3.3.1.js"></script>
 
     <script>
-     
+        var id;
         $(document).ready(function () {
-            $("#saveData").click(function () {
-                alert('DFF')
-                $.ajax({
-                    type: "POST",
-                    url: "/Registration/SaveData",
-                    data: {
-                        namen: $("#firstName").val(), lname: $("#lastName").val(), email: $("#email").val(), phoneno: $("#phoneno").val()
-                    }, success: function (data) {
-                        showData()
-                    }
+            $(".close").click(function () {
+                $("#firstName").val("")
+                $("#lastName").val("")
+                $("#email").val("")
+                $("#phoneno").val("")
+                id = ""
+                $(".hadding").text('Add new')
+                $("#saveData").val('Register Now!')
+            })
+            $('table tbody').on('click', '#edit', function () {
+                var row = $(this).closest('tr')
+                $("#firstName").val(row.find('td:eq(1)').text())
+                $("#lastName").val(row.find('td:eq(2)').text())
+                $("#email").val(row.find('td:eq(3)').text())
+                $("#phoneno").val(row.find('td:eq(4)').text())
+                id = row.find('td:eq(0)').text()
+                $(".hadding").text('Update Record')
+                $("#saveData").val('Update Record!')
+                
+            })
+            $("#table tbody").on('click', '.delete', function () {
+                var result = confirm("Are you sure to delete?");
+                if (result) {
+                    var row = $(this).closest('tr')
+                    var col = row.find('td:eq(0)').text()
+                    $.ajax({
+                        type: "POST",
+                        url: "/Registration/deleteData",
+                        data: {
+                            id: col
+                        }, success: function (data) {
+                            showData()
+                        }
+                    })
+                }
+
                 })
+        
+
+
+            $("#saveData").click(function () {
+
+                var text = $("#saveData").val()
+                if (text === 'Update Record!') {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Registration/UpdateData",
+                        data: {
+                            namen: $("#firstName").val(), lname: $("#lastName").val(), email: $("#email").val(), phoneno: $("#phoneno").val(), ID: id
+                        }, success: function (data) {
+                            showData()
+                        }
+
+                    })
+
+                   
+                } else {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Registration/SaveData",
+                        data: {
+                            namen: $("#firstName").val(), lname: $("#lastName").val(), email: $("#email").val(), phoneno: $("#phoneno").val()
+                        }, success: function (data) {
+                            showData()
+                        }
+
+                    })
+                    $("#firstName").val("")
+                    $("#lastName").val("")
+                    $("#email").val("")
+                    $("#phoneno").val("")
+                    id = ""
+                    $(".hadding").text('Add new')
+                    $("#saveData").val('Register Now!')
+                }
             })
             showData()
+            
             function showData() {
+                $("#table tbody tr").remove(); 
+                
                 $.ajax({
                     type: "POST",
                     url: "/Registration/jsonData",
@@ -118,10 +186,14 @@
                     success: function (data) {
 
                         $.each(data, function (i, item) {
-
+                           
                             var row = "<tr>" + "<td>" + item.id + "</td>" + "<td>" + item.name + "</td>"
                                 + "<td>" + item.lastname + "</td>" + "<td>" + item.email + "</td>"
-                                + "<td>" + item.phone + "</td>" + "<td>" + "<button type='button' class='btn btn-danger' id='delete' >Delete</button>" + "</td>" + "</tr>";
+                                + "<td>" + item.phone + "</td>" + "<td>" + "<button type='button'  class='btn btn-danger delete' id='delete' >Delete</button>" +
+                                "| <button type='button'  class='btn btn-warning ' data-toggle='modal' data-target='#myModal' id='edit'>Edit</button>"
+                                    
+                                +
+                                "</td>" + "</tr>";
                             $("#table tbody").append(row);
                         })
 
