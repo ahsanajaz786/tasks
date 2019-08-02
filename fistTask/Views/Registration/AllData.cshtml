@@ -1,0 +1,147 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>All Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #525252;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container-fluid">
+            <div style="width:100%;background-color:white; margin:auto">
+                <button type="button" style="float:right;margin-right:120px;" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add new</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                             
+                            </div>
+                            <div class="modal-body">
+                                <div class="card-header">
+                                    <h5 class="" style="font-family:Arial">Registration form</h5>
+                                </div>
+                                <div style="width:90%;margin:auto;height:90%">
+
+                                    <div class="form-group">
+                                        <label for="firstName">First Name</label>
+                                        <input type="text" class="form-control" id="firstName" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">Last Name</label>
+                                        <input type="text" class="form-control" id="lastName" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control" id="email" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phoneno">Phone No</label>
+                                        <input type="text" class="form-control" id="phoneno" />
+                                    </div>
+                                    <div class="form-group">
+
+                                        <input type="button" class="btn btn-primary " data-dismiss="modal" style="width:100%" value="Register Now!" id="saveData" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+</div></div>
+                   
+                </div>
+
+                <table class="table table-responsive" width="100%" id="table">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Sr No</th>
+                            <th style="width:20%">F Name</th>
+                            <th style="width:20%">L Name</th>
+                            <th >Email</th>
+                            <th style="width:20%">Phone</th>
+                            <th style="width:20%">Action</th>
+                        </tr>
+
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+
+    <script>
+     
+        $(document).ready(function () {
+            $("#saveData").click(function () {
+                alert('DFF')
+                $.ajax({
+                    type: "POST",
+                    url: "/Registration/SaveData",
+                    data: {
+                        namen: $("#firstName").val(), lname: $("#lastName").val(), email: $("#email").val(), phoneno: $("#phoneno").val()
+                    }, success: function (data) {
+                        showData()
+                    }
+                })
+            })
+            showData()
+            function showData() {
+                $.ajax({
+                    type: "POST",
+                    url: "/Registration/jsonData",
+                    data: {
+                    },
+                    success: function (data) {
+
+                        $.each(data, function (i, item) {
+
+                            var row = "<tr>" + "<td>" + item.id + "</td>" + "<td>" + item.name + "</td>"
+                                + "<td>" + item.lastname + "</td>" + "<td>" + item.email + "</td>"
+                                + "<td>" + item.phone + "</td>" + "<td>" + "<button type='button' class='btn btn-danger' id='delete' >Delete</button>" + "</td>" + "</tr>";
+                            $("#table tbody").append(row);
+                        })
+
+
+                    }
+
+                }).success(function (response) {
+
+
+
+
+                })
+            }
+           
+
+          
+          
+          
+        })
+    </script>
+</body>
+
+</html>
